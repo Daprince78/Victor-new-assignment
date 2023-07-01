@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CP5310 Assignment </title>
+  <style>
+    /* Style for the body of the HTML page */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    /* Required styling for the canvas */
+    canvas {
+      display: block;
+      border: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="mycvs"></canvas>
+
+  <script>
+    // This funtion takes place when the page is loaded
+    window.onload = function() {
+      const canvas = document.getElementById('mycvs');
+      const ctx = canvas.getContext('2d');
+
+      // Set canvas size to fill the screen
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // get the coordinates for the animal (cow)
+      const coordinates = [
+      { x: 7, y: 170 },
+      { x: 7, y: 70 },
+      { x: 25, y: 130 },
+      { x: 45, y: 110},
+      { x: 65, y: 130},
+      { x: 95, y: 90},
+      { x: 135, y: 70},
+      { x: 185, y: 60},
+      { x: 235, y: 60},
+      { x: 335, y: 90},
+      { x: 395, y: 70},
+      { x: 455, y: 90},
+      { x: 475, y: 110},
+      { x: 525, y: 145 },
+      { x: 525, y: 220 },
+      { x: 505, y: 280 },
+      { x: 505, y: 380 },
+      { x: 470, y: 380 },
+      { x: 470, y: 300 },
+      { x: 450, y: 260 },
+      { x: 450, y: 200 },
+      { x: 470, y: 155 },
+      { x: 450, y: 200 },
+      { x: 450, y: 260 },
+      { x: 450, y: 380 },
+      { x: 415, y: 380 },
+      { x: 415, y: 280 },
+      { x: 450, y: 260 },
+      { x: 415, y: 280 },
+      { x: 335, y: 295 },
+      { x: 275, y: 280 },
+      { x: 250, y: 280 },
+      { x: 275, y: 220 },
+      { x: 250, y: 280 },
+      { x: 240, y: 350 },
+      { x: 240, y: 380 },
+      { x: 205, y: 380 },
+      { x: 205, y: 320 },
+      { x: 185, y: 220 },
+      { x: 205, y: 320 },
+      { x: 175, y: 270 },
+      { x: 135, y: 200 },
+      { x: 85, y: 220 },
+      { x: 45, y: 200 },
+      { x: 65, y: 200 },
+      { x: 95, y: 170 },
+      { x: 85, y: 160 },
+      { x: 95, y: 170 },
+      { x: 65, y: 200 },
+      { x: 45, y: 200 },
+      { x: 35, y: 200 },
+      { x: 7, y: 170 },
+      ];
+
+      //Define the movement variables 
+      let currentX = 7;
+      const moveDeltaX = 4; //to move the drawn animal by 4px 
+      const maxX = canvas.width - 525; // stop at the end of cow
+
+      // Draw the dots on the canvas
+      function drawDots() {
+        coordinates.forEach(coord => {
+          ctx.beginPath();
+          ctx.arc(coord.x, coord.y, 7, 0, 2 * Math.PI);
+          ctx.fillStyle = 'black';
+          ctx.fill();
+          ctx.closePath();
+        });
+      }
+
+      // Draw strokes to connect the dots
+      function drawStrokes() {
+        for (let i = 0; i < coordinates.length - 1; i++) {
+          setTimeout(() => {
+            const startX = coordinates[i].x;
+            const startY = coordinates[i].y;
+            const endX = coordinates[i + 1].x;
+            const endY = coordinates[i + 1].y;
+
+            // stroke stlye gradient 
+            const gradient = ctx.createLinearGradient(startX, startY, endX, endY);
+            gradient.addColorStop(0, 'blue');
+            gradient.addColorStop(0.5, 'red');
+            gradient.addColorStop(1, 'yellow');
+
+            // bign a path for the stroke and draw the stroke with 3secs interval
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 7;
+            ctx.stroke();
+            ctx.closePath();
+          }, i * 3000);
+        }
+      }
+
+      // Move the cow to the right
+      function moveCow() {
+        const moveInterval = setInterval(() => {
+          if (currentX < maxX) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+            // Update the coordinates with the new X position
+            coordinates.forEach(coord => {
+              coord.x += moveDeltaX;
+            });
+
+            drawDots(); // drawing new dots 
+            drawStrokes(); //drawing new strokes
+            currentX += moveDeltaX;
+          } else {
+            clearInterval(moveInterval);
+          }
+        }, 300); //Delay between each movement is 300 millseconds
+      }
+
+      // Animate the cow
+      function animateCow() {
+        drawDots();
+        setTimeout(() => {
+          drawStrokes();
+          setTimeout(moveCow, (coordinates.length - 1) * 3000);
+        }, 3000);
+      }
+
+      animateCow(); // callling the function animate cow
+    };
+  </script>
+</body>
+</html>
